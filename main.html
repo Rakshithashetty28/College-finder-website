@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>College Finder</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+body{
+margin:0;
+font-family:'Poppins',sans-serif;
+background:linear-gradient(120deg,#4facfe,#00f2fe);
+min-height:100vh;
+overflow-x:hidden;
+}
+
+/* Animated Background */
+.background-animation{
+position:fixed;
+width:100%;
+height:100%;
+top:0;
+left:0;
+z-index:-1;
+background:radial-gradient(circle at 20% 30%,rgba(255,255,255,0.3),transparent 40%),
+radial-gradient(circle at 80% 70%,rgba(255,255,255,0.2),transparent 40%);
+animation:moveBg 10s infinite alternate;
+}
+
+@keyframes moveBg{
+0%{transform:scale(1)}
+100%{transform:scale(1.2)}
+}
+
+/* Title */
+h1{
+text-align:center;
+margin-top:30px;
+font-size:36px;
+color:white;
+letter-spacing:1px;
+text-shadow:0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* Filters */
+.filters{
+display:flex;
+justify-content:center;
+gap:15px;
+margin:30px auto;
+padding:20px;
+width:85%;
+background:rgba(255,255,255,0.25);
+backdrop-filter:blur(12px);
+border-radius:15px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+flex-wrap:wrap;
+}
+
+.filters input,
+.filters select{
+padding:10px 14px;
+border-radius:8px;
+border:none;
+font-size:14px;
+min-width:170px;
+outline:none;
+}
+
+/* Grid */
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:25px;
+padding:20px 50px 40px;
+}
+
+/* Card */
+.card{
+background:white;
+padding:22px;
+border-radius:18px;
+box-shadow:0 10px 30px rgba(0,0,0,0.15);
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+}
+
+/* Badge */
+.badge{
+background:#ff416c;
+color:white;
+padding:6px 14px;
+border-radius:20px;
+font-size:12px;
+display:inline-block;
+margin-bottom:10px;
+}
+
+/* Package */
+.package{
+color:#28a745;
+font-weight:600;
+}
+
+.website, .map{
+padding:9px 16px;
+border-radius:8px;
+text-decoration:none;
+display:inline-block;
+margin-top:12px;
+margin-right:6px;
+font-size:13px;
+}
+
+.website{
+background:#28a745;
+color:white;
+}
+
+.map{
+background:#007bff;
+color:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="background-animation"></div>
+
+<h1>🎓 College Finder</h1>
+
+<div class="filters">
+    <input type="text" id="search" placeholder="Search College Name...">
+
+    <select id="categoryFilter">
+        <option value="">All Categories</option>
+        <option value="IIT">IIT</option>
+        <option value="NIT">NIT</option>
+        <option value="IIM">IIM</option>
+    </select>
+
+    <select id="stateFilter">
+        <option value="">All States</option>
+    </select>
+</div>
+
+<div id="collegeContainer" class="grid"></div>
+
+<script>
+
+let allColleges = [];
+
+// ✅ FIXED FETCH
+fetch("http://localhost:3000/colleges")
+.then(res => res.json())
+.then(data => {
+    console.log(data); // debug
+    allColleges = data;
+    populateStates(data);
+    displayColleges(data);
+})
+.catch(err => console.error("Error:", err));
+
+function populateStates(data) {
+    const states = [...new Set(data.map(c => c.state))].sort();
+    const stateFilter = document.getElementById("stateFilter");
+
+    states.forEach(state => {
+        const option = document.createElement("option");
+        option.value = state;
+        option.textContent = state;
+        stateFilter.appendChild(option);
+    });
+}
+
+function displayColleges(data) {
+    const container = document.getElementById("collegeContainer");
+    container.innerHTML = "";
+
+    if(data.length === 0){
+        container.innerHTML = "<p>No colleges found</p>";
+        return;
+    }
+
+    data.forEach(college => {
+        container.innerHTML += `
+        <div class="card">
+            <div class="badge">${college.category}</div>
+            <h3>${college.name}</h3>
+            <p><b>Location:</b> ${college.city}, ${college.state}</p>
+            <p><b>Exam:</b> ${college.exam}</p>
+            <p><b>Fees:</b> ${college.fees}</p>
+            <p><b>Ranking:</b> ${college.ranking}</p>
+            <p class="package">Avg Package: ${college.average_package}</p>
+            <p class="package">Highest Package: ${college.highest_package}</p>
+
+            <a class="website" href="${college.website}" target="_blank">
+               Visit Website
+            </a>
+
+            <a class="map"
+               href="https://www.google.com/maps/search/${encodeURIComponent(college.name)}"
+               target="_blank">
+               View on Map
+            </a>
+        </div>
+        `;
+    });
+}
+
+// Filters
+document.querySelectorAll("input, select").forEach(el => {
+    el.addEventListener("input", filterColleges);
+});
+
+function filterColleges() {
+    const search = document.getElementById("search").value.toLowerCase();
+    const category = document.getElementById("categoryFilter").value;
+    const state = document.getElementById("stateFilter").value;
+
+    const filtered = allColleges.filter(c =>
+        c.name.toLowerCase().includes(search) &&
+        (!category || c.category === category) &&
+        (!state || c.state === state)
+    );
+
+    displayColleges(filtered);
+}
+
+</script>
+
+</body>
+</html>

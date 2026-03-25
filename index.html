@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>College Finder | Home</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* NAVBAR */
+nav{
+    position:fixed;
+    width:100%;
+    padding:15px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    z-index:10;
+    background:rgba(0,0,0,0.4);
+    backdrop-filter:blur(6px);
+}
+
+nav h2{
+    color:white;
+    font-size:22px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
+    font-weight:500;
+}
+
+nav a:hover{
+    color:#00d4ff;
+}
+
+/* VIDEO BACKGROUND */
+video{
+    position:fixed;
+    right:0;
+    bottom:0;
+    min-width:100%;
+    min-height:100%;
+    object-fit:cover;
+    z-index:-2;
+}
+
+/* DARK OVERLAY */
+.overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.65);
+    z-index:-1;
+}
+
+/* HERO SECTION */
+.hero{
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    color:white;
+    padding:20px;
+}
+
+.hero h1{
+    font-size:3.5rem;
+    margin-bottom:20px;
+    animation:fadeIn 2s ease-in-out;
+}
+
+.hero p{
+    font-size:1.3rem;
+    max-width:700px;
+    margin-bottom:30px;
+    opacity:0.9;
+}
+
+.hero button{
+    padding:15px 35px;
+    font-size:1.1rem;
+    border:none;
+    border-radius:30px;
+    background:#00d4ff;
+    color:black;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.hero button:hover{
+    transform:scale(1.1);
+    background:#00aacc;
+}
+
+/* Animation */
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(40px);}
+    to{opacity:1; transform:translateY(0);}
+}
+</style>
+</head>
+
+<body>
+    <div class="background-animation"></div>
+
+<!-- Background Video -->
+<video autoplay muted loop>
+    <source src="https://cdn.coverr.co/videos/coverr-students-walking-in-campus-4503/1080p.mp4" type="video/mp4">
+</video>
+
+<div class="overlay"></div>
+
+<!-- Navbar -->
+<nav>
+    <h2>🎓 College Finder</h2>
+    <div>
+        <a href="index.html">Home</a>
+        <a href="main.html">Explore</a>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<div class="hero">
+    <h1>Discover Your Dream College</h1>
+    <p>
+        Explore all IITs, NITs and IIMs across India.
+        Filter by state, course, rankings and placement packages.
+        Start your journey today.
+    </p>
+    <button onclick="goToMain()">Explore Colleges</button>
+</div>
+
+<script>
+function goToMain(){
+    window.location.href = "main.html";
+}
+</script>
+
+</body>
+</html>
